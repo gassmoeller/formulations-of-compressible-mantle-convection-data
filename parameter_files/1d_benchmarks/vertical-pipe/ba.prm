@@ -1,0 +1,8 @@
+subsection Formulation
+  set Mass conservation = incompressible
+  set Temperature equation = reference density profile
+end
+
+subsection Heating model
+  set List of model names = 
+end 

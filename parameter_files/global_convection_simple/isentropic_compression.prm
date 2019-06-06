@@ -1,0 +1,134 @@
+# A simple box model setup to test how large the error
+# is that we make by different formulations for simplifying 
+# the compressibility.
+
+set Additional shared libraries            = ../../plugins/libprojected_density_material.so, ../../plugins/libadiabatic_density.so
+
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 1e10
+set Use years in output instead of seconds = true
+set CFL number                             = 1
+set Output directory                       = output-isentropic-compression
+set Adiabatic surface temperature          = 1600
+set Use conduction timestep                = true
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Maximum time step                      = 1e7
+set Max nonlinear iterations               = 30
+
+subsection Adiabatic conditions model
+  subsection Compute profile
+    set Number of points = 1000000
+    set Composition reference profile = function
+  end
+end
+
+subsection Formulation
+  set Formulation          = custom #anelastic liquid approximation
+  set Mass conservation    = isentropic compression
+  set Temperature equation = real density
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = projected_density
+  set Compositional field methods = prescribed field
+end
+
+subsection Initial composition model
+  set Model name = adiabatic density
+end
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent  = 6000000
+    set Y extent  = 3000000
+    set X repetitions = 2
+  end
+end
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators  = bottom, top
+end
+
+
+subsection Material model
+  set Model name = projected density
+  subsection Projected density model
+    set Use exponential thermal expansivity = true
+  end
+
+  subsection Simple compressible model
+    set Reference density             = 3300
+    set Viscosity                     = 1e22
+    set Thermal expansion coefficient = 4e-5
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+############### Parameters describing the temperature field
+# Note: The temperature plays no role in this model
+
+subsection Boundary temperature model
+  set List of model names = box
+  subsection Box
+    set Bottom temperature = 3700
+    set Top temperature    = 273
+  end
+end
+
+subsection Initial temperature model
+  set List of model names  = adiabatic, function
+  subsection Function
+#    set Function expression = 20 * exp(-(x-2000000)*(x-2000000)/(2*400000*400000) - y*y/(2*200000*200000)) + 10 * exp(-(x-5000000)*(x-5000000)/(2*400000*400000) - y*y/(2*200000*200000))
+    set Function expression = 5 * exp(-(x-200000)^2/(2*400000^2) - (y-3000000)^2/(2*200000^2)) + 3 * exp(-(x-3500000)^2/(2*400000^2) - (y-3000000)^2/(2*200000^2))
+  end
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating, shear heating
+  subsection Adiabatic heating
+    set Use simplified adiabatic heating = true
+  end
+end
+
+############### Parameters describing the discretization
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 7
+  set Time steps between mesh refinement = 0
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, composition statistics, heat flux statistics, temperature statistics
+  subsection Visualization
+    set Output format                 = vtu
+    set Time between graphical output = 2e6
+    set List of output variables      = material properties, nonadiabatic temperature, nonadiabatic pressure, adiabat
+    set Interpolate output            = true
+  end
+end
+
+subsection Checkpointing
+  set Time between checkpoint = 1800
+end

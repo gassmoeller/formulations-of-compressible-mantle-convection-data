@@ -1,0 +1,14 @@
+# Same setup as in thermal contraction, but run with ALA
+
+set Additional shared libraries = ../../plugins/libprojected_density_material.so, ../../plugins/libadiabatic_density.so
+
+set Dimension = 2
+
+include thermal_contraction.prm
+
+set Output directory                       = output-thermal-contraction-ala
+
+subsection Formulation
+  set Mass conservation = reference density profile
+  set Temperature equation = reference density profile 
+end
