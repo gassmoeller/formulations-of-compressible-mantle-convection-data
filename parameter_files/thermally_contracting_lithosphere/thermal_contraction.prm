@@ -125,12 +125,13 @@ subsection Material model
     set Minimum viscosity          = 1e21
     set Cohesion                   = 20.e6
     set Reduce viscosity for composition 1 = true
+    set Use adiabatic pressure for density = true
   end
 
   subsection Simple compressible model
     set Thermal conductivity          = 2.5
     set Reference specific heat       = 750
-    set Reference compressibility     = 0.0
+    set Reference compressibility     = 3.2e-12
     set Reference density             = 2800
     set Thermal expansion coefficient = 4e-5
     set Viscosity                     = 1e24
