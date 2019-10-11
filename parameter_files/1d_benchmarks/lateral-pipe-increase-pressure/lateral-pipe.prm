@@ -1,14 +1,13 @@
 # This is a benchmark to illustrate the effect of different formulations
-# of compressibility. It starts from a simple downward pipe flow model,
-# in which material enters a vertical pipe with a prescribed velocity.
-# Due to gravity and pressure the material compresses and the velocity
+# of compressibility. It starts from a simple lateral pipe model,
+# in which material resides insided a horizontal pipe.
+# Due to a pressure increase at the outlet the material is compressed and the velocity
 # changes to conserve mass.
 
 set Additional shared libraries = ../../../plugins/libprojected_density_material.so, ../../../plugins/libadiabatic_density.so
 
 set Dimension = 2
 
-# 1e7 years
 set End time                               = 31557600e7
 set Use years in output instead of seconds = false
 set Adiabatic surface temperature          = 1600
@@ -89,7 +88,6 @@ subsection Boundary traction model
 
   subsection Function
 # This generates a pressure of e * 100 MPa at 10 Myr
-    #set Function expression = -10 * t / (3600*24*365.25); 0.0
     set Function expression = -1e8 * exp (t / (1e7*3600*24*365.25)); 0.0
   end
 end

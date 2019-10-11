@@ -1,8 +1,6 @@
 # This is a benchmark to illustrate the effect of different formulations
-# of compressibility. It starts from a simple downward pipe flow model,
-# in which material enters a vertical pipe with a prescribed velocity.
-# Due to gravity and pressure the material compresses and the velocity
-# changes to conserve mass.
+# of compressibility. It is used to calculate representative values for
+# idealized plume rising through the mantle. 
 
 set Additional shared libraries = ../../plugins/libprojected_density_material.so, ../../plugins/libadiabatic_density.so
 
@@ -79,9 +77,6 @@ subsection Heating model
 end
 
 
-############### Boundary conditions
-# We only fix the temperature at the upper boundary, the other boundaries
-# are isolating.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
   set List of model names = initial temperature, function
@@ -92,8 +87,6 @@ subsection Boundary temperature model
   end
 end
 
-# To guarantuee a steady downward flow, we fix the velocity
-# at the top and bottom, and set it to free slip on the sides. 
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = bottom:function
   set Tangential velocity boundary indicators =
@@ -126,7 +119,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, mass error statistics, temperature statistics, mass flux statistics, material statistics, depth average
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, material statistics, depth average
 
   subsection Depth average
     set Time between graphical output = 1e7
@@ -138,12 +131,7 @@ subsection Postprocess
   subsection Visualization
     set Number of grouped files       = 1
     set Output format                 = vtu
-
-    # We are only interested in the last timestep (when the system hast reached
-    # a steady state). For following the development of the system or checking
-    # if the solution already reached steady state, this parameter can be set 
-    # to a smaller value.
     set Time between graphical output = 1e7
-    set List of output variables = mass error, rho div u, u grad rho, nonadiabatic temperature, nonadiabatic pressure, heating, material properties, strain rate, adiabat
+    set List of output variables = nonadiabatic temperature, nonadiabatic pressure, heating, material properties, strain rate, adiabat
   end
 end

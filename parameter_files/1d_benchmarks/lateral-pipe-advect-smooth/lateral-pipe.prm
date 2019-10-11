@@ -1,8 +1,8 @@
 # This is a benchmark to illustrate the effect of different formulations
-# of compressibility. It starts from a simple downward pipe flow model,
-# in which material enters a vertical pipe with a prescribed velocity.
-# Due to gravity and pressure the material compresses and the velocity
-# changes to conserve mass.
+# of compressibility. It starts from a simple lateral pipe flow model,
+# in which material enters a horizontal pipe with a prescribed velocity.
+# Due to a changing boundary temperature we know what temperature gradients
+# are advected and what mass flux should occur.
 
 set Additional shared libraries = ../../../plugins/libprojected_density_material.so, ../../../plugins/libadiabatic_density.so
 
@@ -76,9 +76,6 @@ subsection Gravity model
 end
 
 
-############### Boundary conditions
-# We only fix the temperature at the upper boundary, the other boundaries
-# are isolating.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = left
   set List of model names = function
@@ -88,8 +85,7 @@ subsection Boundary temperature model
   end
 end
 
-# To guarantuee a steady downward flow, we fix the velocity
-# at the top and bottom, and set it to free slip on the sides. 
+
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left:function
   set Tangential velocity boundary indicators = bottom,top
@@ -99,6 +95,7 @@ subsection Boundary velocity model
     set Variable names      = x,y,t
   end
 end
+
 
 subsection Initial temperature model
   set Model name = function
@@ -131,11 +128,7 @@ subsection Postprocess
     set Number of grouped files       = 1
     set Output format                 = vtu
 
-    # We are only interested in the last timestep (when the system hast reached
-    # a steady state). For following the development of the system or checking
-    # if the solution already reached steady state, this parameter can be set 
-    # to a smaller value.
-    set Time between graphical output = 6201145.069582775 #1e7
+    set Time between graphical output = 6201145.069582775
     set List of output variables = nonadiabatic temperature, nonadiabatic pressure, heating, material properties, strain rate
   end
 end

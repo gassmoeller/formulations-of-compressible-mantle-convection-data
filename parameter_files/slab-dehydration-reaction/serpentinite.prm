@@ -1,7 +1,7 @@
 # This is a benchmark to illustrate the effect of different formulations
-# of compressibility. It features a simple upwelling/downwelling,
+# of compressibility. It features a simplified subducting slab,
 # induced by material entering the model with a prescribed temperature.
-# Due to gravity and pressure the material compresses and the velocity
+# Due to pressure and a phase transition the material compresses and the velocity
 # changes to conserve mass.
 
 set Additional shared libraries = ../../plugins/libprojected_density_material.so, ../../plugins/libadiabatic_density.so
@@ -12,9 +12,11 @@ set End time                               = 7.5e7
 set Use years in output instead of seconds = true
 set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set Nonlinear solver tolerance             = 1e-7 #1e-12
+
+# We use a higher than default accuracy to make sure our results are robust.
+# The default of 1e-5 should already be fine.
+set Nonlinear solver tolerance             = 1e-7
 set Max nonlinear iterations               = 25
-set Surface pressure                       = 0
 
 set Output directory                       = output-serpentinite-6-projected-density
 
@@ -32,19 +34,23 @@ end
 
 subsection Solver parameters
   subsection Stokes solver parameters
+    # We use a higher than default accuracy to make sure our results are robust.
+    # The default of 1e-7 should already be fine.
     set Linear solver tolerance = 1e-12
   end
 end
 
+# Use the PDA for this model
 subsection Formulation
   set Mass conservation = projected density field
   set Temperature equation = real density
 end
 
-subsection Formulation
-  set Mass conservation = reference density profile
-  set Temperature equation = reference density profile
-end
+# This is the corresponding setting for ALA
+#subsection Formulation
+#  set Mass conservation = reference density profile
+#  set Temperature equation = reference density profile
+#end
 
 subsection Compositional fields
   set Number of fields = 2
@@ -54,7 +60,7 @@ end
 
 
 subsection Initial composition model
-  set List of model names = function #, adiabatic density
+  set List of model names = function
 
   subsection Function
     set Function expression = 0; 3300
@@ -83,7 +89,7 @@ end
 
 
 ############### Boundary conditions
-# We only fix the temperature at the upper boundary, the other boundaries
+# We only fix the temperature at the upper and left boundary, the other boundaries
 # are isolating.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, left
@@ -91,7 +97,7 @@ subsection Boundary temperature model
 end
 
 # To guarantuee a steady downward flow, we fix the velocity
-# at the top and bottom, and set it to free slip on the sides. 
+# at the top, and fix the horizontal velocity at the sides and bottom
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = top:function, right x:function, left x:function, bottom x:function
 
@@ -101,18 +107,21 @@ subsection Boundary velocity model
   end
 end
 
+# We prescribe a crustal layer flowing in from the top. We also have
+# to fix the velocity at the left side, since it is an inflow boundary (but it
+# is fixed to 0).
 subsection Boundary composition model
-  set Fixed composition boundary indicators = top
+  set Fixed composition boundary indicators = top, left
   set List of model names = function
 
   subsection Function
-    # Hard boundary
-    #set Function expression = if(x>30000 && x<40000,1,0); 3300
     set Function expression = if(x>10000 && x<60000,exp(-(x-35000)*(x-35000)/(2*10000*10000)),0); 3300
     set Variable names      = x,y
   end
 end
 
+# Fix the pressure at the bottom and side boundaries to prevent outflow except when
+# caused by dynamic pressure.
 subsection Boundary traction model
   set Prescribed traction boundary indicators = right y:initial lithostatic pressure, left y:initial lithostatic pressure, bottom y:initial lithostatic pressure
 
@@ -146,9 +155,6 @@ subsection Material model
 end
 
 
-# We use a global refinement of 0 to have a single cell in width. More cells
-# allow for instabilities at the open boundary that would influence the
-# accuracy with increasing resolution.
 subsection Mesh refinement
   set Initial adaptive refinement        = 0 
   set Initial global refinement          = 6
@@ -162,11 +168,6 @@ subsection Postprocess
   subsection Visualization
     set Number of grouped files       = 1
     set Output format                 = vtu
-
-    # We are only interested in the last timestep (when the system hast reached
-    # a steady state). For following the development of the system or checking
-    # if the solution already reached steady state, this parameter can be set 
-    # to a smaller value.
     set Time between graphical output = 0
     set List of output variables = nonadiabatic temperature, nonadiabatic pressure, heating, material properties, strain rate
   end

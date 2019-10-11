@@ -1,7 +1,7 @@
 # This is a benchmark to illustrate the effect of different formulations
-# of compressibility. It starts from a simple downward pipe flow model,
-# in which material enters a vertical pipe with a prescribed velocity.
-# Due to gravity and pressure the material compresses and the velocity
+# of compressibility. It starts from a simple lateral pipe flow model,
+# in which material enters a horizontal pipe with a prescribed velocity.
+# Due to internal heating the material expands and the velocity
 # changes to conserve mass.
 
 set Additional shared libraries = ../../../plugins/libprojected_density_material.so, ../../../plugins/libadiabatic_density.so
@@ -121,7 +121,7 @@ subsection Postprocess
     set Number of grouped files       = 1
     set Output format                 = vtu
 
-    # We are only interested in the last timestep (when the system hast reached
+    # We are only interested in the last timestep (when the system has reached
     # a steady state). For following the development of the system or checking
     # if the solution already reached steady state, this parameter can be set 
     # to a smaller value.

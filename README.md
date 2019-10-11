@@ -26,4 +26,4 @@ Next the plugins in the folder plugins need to be compiled as shared libraries a
 
 Now, all models in the parameter_files folder can be run. The benchmarks in parameter_files/1d_benchmarks come with shell scripts called run.sh that start all necessary model variations, and with gnuplot scripts (in the subdirectory figures) that plot the results.
 
-The computations of the paper were produced with the following [ASPECT version](https://github.com/gassmoeller/aspect/releases/tag/compressible-formulations-submission).
+The computations of the paper were produced with the following [ASPECT version](https://github.com/gassmoeller/aspect/releases/tag/compressible-formulations-submission). Official ASPECT releases starting with release 2.2.0 will also support the contained features (but might require minor changes to the parameter files).

@@ -1,7 +1,7 @@
 # This is a benchmark to illustrate the effect of different formulations
-# of compressibility. It starts from a simple downward pipe flow model,
-# in which material enters a vertical pipe with a prescribed velocity.
-# Due to gravity and pressure the material compresses and the velocity
+# of compressibility. It starts from a simple lateral pipe flow model,
+# in which material resides motionless in a horizontal pipe.
+# Due to internal heating the material expands and the velocity
 # changes to conserve mass.
 
 set Additional shared libraries = ../../../plugins/libprojected_density_material.so, ../../../plugins/libadiabatic_density.so
@@ -81,15 +81,11 @@ subsection Heating model
 end
 
 
-############### Boundary conditions
-# We only fix the temperature at the upper boundary, the other boundaries
-# are isolating.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators =
 end
 
-# To guarantuee a steady downward flow, we fix the velocity
-# at the top and bottom, and set it to free slip on the sides. 
+
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left:function
   set Tangential velocity boundary indicators = bottom,top
