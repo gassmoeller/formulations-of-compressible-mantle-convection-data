@@ -3,10 +3,10 @@
 This repository accompanies the paper
 ```
 Formulation of Compressible Mantle Convection
-by Rene Gassmoeller, Juliane Dannberg, Wolfgang Bangerth, Timo Heister, Robert Myhill
+Rene Gassmoeller, Juliane Dannberg, Wolfgang Bangerth, Timo Heister, Robert Myhill
+Geophysical Journal International, Volume 221, Issue 2, May 2020, Pages 1264–1280.
 ```
-
-and contains data files and source code to reproduce the computations of the paper.
+and contains data files and source code to reproduce the computations of the paper available at https://doi.org/10.1093/gji/ggaa078.
 
 Contents
 --------
