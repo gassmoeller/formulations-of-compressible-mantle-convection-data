@@ -191,13 +191,20 @@ namespace aspect
         {
           const double transition_pressure = 4.e9;
           const double transition_temperature = 870.;
-          const double pressure_width = 1.e8; //2.5e8;
+          const double pressure_width = 5.e7; //2.5e8;
           const double slope = 0;
           const double density_jump = 600.0;
 
+          double pressure_for_density = in.pressure[i];
+
+          // If using the PDA avoid using the real pressure for the density calculation to prevent
+          // pressure waves from forming
+          if (use_adiabatic_pressure_for_density)
+        	  pressure_for_density = this->get_adiabatic_conditions().pressure(in.position[i]);
+
           // then calculate the deviation from the transition point (both in temperature
           // and in pressure)
-          const double pressure_deviation = in.pressure[i] - transition_pressure
+          const double pressure_deviation = pressure_for_density - transition_pressure
               - slope * (in.temperature[i] - transition_temperature);
 
           // last, calculate the percentage of material that has undergone the transition
@@ -207,13 +214,6 @@ namespace aspect
                                   0.5*(-1.0 + std::tanh(pressure_deviation / pressure_width)) * density_jump * in.composition[i][crust_index]
         		                                                                                                         :
         		          0.0;
-
-          double pressure_for_density = in.pressure[i];
-
-          // If using the PDA avoid using the real pressure for the density calculation to prevent
-          // pressure waves from forming
-          if (use_adiabatic_pressure_for_density)
-        	  pressure_for_density = this->get_adiabatic_conditions().pressure(in.position[i]);
 
           double thermal_expansivity = thermal_alpha;
           if (use_exponential_alpha)

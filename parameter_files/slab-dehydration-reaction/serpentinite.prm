@@ -15,14 +15,14 @@ set Nonlinear solver scheme                = iterated Advection and Stokes
 
 # We use a higher than default accuracy to make sure our results are robust.
 # The default of 1e-5 should already be fine.
-set Nonlinear solver tolerance             = 1e-7
+set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 25
 
-set Output directory                       = output-serpentinite-6-projected-density
+set Output directory                       = output
 
 subsection Adiabatic conditions model
   subsection Compute profile
-    set Number of points = 100000
+    set Number of points = 10000
   end
 end
 
@@ -30,14 +30,6 @@ subsection Discretization
   set Use locally conservative discretization = true
   set Use discontinuous composition discretization = true
   set Use discontinuous temperature discretization = true
-end
-
-subsection Solver parameters
-  subsection Stokes solver parameters
-    # We use a higher than default accuracy to make sure our results are robust.
-    # The default of 1e-7 should already be fine.
-    set Linear solver tolerance = 1e-12
-  end
 end
 
 # Use the PDA for this model
@@ -150,14 +142,18 @@ subsection Material model
   set Model name = projected density
 
   subsection Simple compressible model
-    set Viscosity                                      = 1e22
+    set Viscosity                                      = 1e23
+  end
+
+  subsection Projected density model
+    set Use adiabatic pressure for density = true
   end
 end
 
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0 
-  set Initial global refinement          = 6
+  set Initial global refinement          = 7
   set Time steps between mesh refinement = 0
 end
 
@@ -168,7 +164,15 @@ subsection Postprocess
   subsection Visualization
     set Number of grouped files       = 1
     set Output format                 = vtu
-    set Time between graphical output = 0
-    set List of output variables = nonadiabatic temperature, nonadiabatic pressure, heating, material properties, strain rate
+    set Time between graphical output = 1e6
+    set List of output variables = nonadiabatic temperature, nonadiabatic pressure, heating, material properties, strain rate, shear stress, principal stress
   end
+end
+
+subsection Checkpointing
+  set Time between checkpoint = 3600
+end
+
+subsection Termination criteria
+  set Checkpoint on termination = true
 end

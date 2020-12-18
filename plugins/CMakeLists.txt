@@ -47,7 +47,7 @@ DEAL_II_INITIALIZE_CACHED_VARIABLES()
 SET(TARGET "projected_density_material")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED projected_density_material.cc)
+ADD_LIBRARY(${TARGET} SHARED projected_density_material.cc principal_stress.h principal_stress.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})
 
 SET(TARGET "adiabatic_density")
